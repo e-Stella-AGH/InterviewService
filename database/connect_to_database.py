@@ -9,7 +9,7 @@ db_key = "DATABASE_URL"
 
 
 def get_attribute(key: str):
-    filename = "config.json"
+    filename = "../config.json"
     if not isfile(filename):
         return None
 

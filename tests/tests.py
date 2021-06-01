@@ -1,6 +1,5 @@
 import pytest
 
-from test_db import override_get_interview_uuid_from_application_id, override_get_organization_uuid_from_hrpartner
 from main import app, change_for_tests
 from starlette.testclient import TestClient
 

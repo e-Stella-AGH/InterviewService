@@ -1,4 +1,4 @@
-from connect_to_database import Base
+from database.connect_to_database import Base
 
 if Base is not None:
     class Interviews(Base):

@@ -2,8 +2,10 @@ from fastapi import Depends, FastAPI, HTTPException
 from datetime import date
 from typing import Dict
 from starlette.testclient import TestClient
-from database import get_organization_uuid_from_hrpartner, get_interview_uuid_from_application_id, DatabaseResult
-from test_db import override_get_interview_uuid_from_application_id, override_get_organization_uuid_from_hrpartner
+
+from database.DatabaseResult import DatabaseResult
+from database.database import get_organization_uuid_from_hrpartner, get_interview_uuid_from_application_id
+from tests.test_db import override_get_interview_uuid_from_application_id, override_get_organization_uuid_from_hrpartner
 
 app = FastAPI()
 

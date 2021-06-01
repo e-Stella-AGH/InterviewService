@@ -1,9 +1,9 @@
 from sqlalchemy import desc
 
 
-from DatabaseResult import DatabaseResult
-from connect_to_database import loadSession
-from models import HrPartners, Interviews
+from database.DatabaseResult import DatabaseResult
+from database.connect_to_database import loadSession
+from database.models import HrPartners, Interviews
 
 
 def get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, str):
