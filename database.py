@@ -1,58 +1,9 @@
-from sqlalchemy import create_engine, desc
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from os import environ
-import json
-from os.path import isfile
+from sqlalchemy import desc
+
 
 from DatabaseResult import DatabaseResult
-
-db_key = "DATABASE_URL"
-
-
-def get_attribute(key: str):
-    filename = "config.json"
-    if not isfile(filename):
-        return None
-
-    with open(filename) as json_file:
-        data = json.load(json_file)
-        if key in data:
-            return data[key]
-        else:
-            return None
-
-
-uri = environ[db_key] if db_key in environ else get_attribute(db_key)
-
-if uri is not None and uri.startswith("postgres://"):
-    uri = uri.replace("postgres://", "postgresql://", 1)
-else:
-    uri = "sqlite:///./database.db"
-
-# For debug engine = create_engine(uri, echo=True)
-engine = create_engine(uri, echo=False)
-Base = declarative_base(engine)
-
-
-def loadSession():
-    """"""
-    metadata = Base.metadata
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
-
-
-class Interviews(Base):
-    """"""
-    __tablename__ = 'interviews'
-    __table_args__ = {'autoload': True}
-
-
-class HrPartners(Base):
-    """"""
-    __tablename__ = 'hrpartners'
-    __table_args__ = {'autoload': True}
+from connect_to_database import loadSession
+from models import HrPartners, Interviews
 
 
 def get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, str):
