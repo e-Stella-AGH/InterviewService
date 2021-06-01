@@ -27,6 +27,8 @@ uri = environ[db_key] if db_key in environ else get_attribute(db_key)
 
 if uri is not None and uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
+else:
+    uri = "sqlite:///./database.db"
 
 # For debug engine = create_engine(uri, echo=True)
 engine = create_engine(uri, echo=False)
