@@ -1,10 +1,11 @@
-from enum import Enum
 from sqlalchemy import create_engine, desc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from os import environ
 import json
 from os.path import isfile
+
+from DatabaseResult import DatabaseResult
 
 db_key = "DATABASE_URL"
 
@@ -50,12 +51,6 @@ class HrPartners(Base):
     """"""
     __tablename__ = 'hrpartners'
     __table_args__ = {'autoload': True}
-
-
-class DatabaseResult(Enum):
-    FAILURE = 1
-    DONT_EXIST = 2
-    SUCCESS = 3
 
 
 def get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, str):

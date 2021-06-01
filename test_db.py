@@ -1,4 +1,4 @@
-from database import DatabaseResult
+from DatabaseResult import DatabaseResult
 
 
 def override_get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, str):
