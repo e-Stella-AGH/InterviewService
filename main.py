@@ -1,7 +1,9 @@
 from fastapi import Depends, FastAPI, HTTPException
 from datetime import date
 from typing import Dict
+from starlette.testclient import TestClient
 from database import get_organization_uuid_from_hrpartner, get_interview_uuid_from_application_id, DatabaseResult
+from test_db import override_get_interview_uuid_from_application_id, override_get_organization_uuid_from_hrpartner
 
 app = FastAPI()
 
@@ -22,3 +24,9 @@ async def get_links(hr_partner_id: int, application_id: int, which: int = 0):
         "admin": admin_link,
         "job_seeker": job_seeker_link
     }
+
+
+def change_for_tests():
+    global get_organization_uuid_from_hrpartner, get_interview_uuid_from_application_id
+    get_organization_uuid_from_hrpartner = override_get_organization_uuid_from_hrpartner
+    get_interview_uuid_from_application_id = override_get_interview_uuid_from_application_id

@@ -1,5 +1,4 @@
 from enum import Enum
-
 from sqlalchemy import create_engine, desc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -25,12 +24,20 @@ def get_attribute(key: str):
 
 uri = environ[db_key] if db_key in environ else get_attribute(db_key)
 
-if uri.startswith("postgres://"):
+if uri is not None and uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
 
 # For debug engine = create_engine(uri, echo=True)
 engine = create_engine(uri, echo=False)
 Base = declarative_base(engine)
+
+
+def loadSession():
+    """"""
+    metadata = Base.metadata
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session
 
 
 class Interviews(Base):
@@ -45,17 +52,6 @@ class HrPartners(Base):
     __table_args__ = {'autoload': True}
 
 
-def loadSession():
-    """"""
-    metadata = Base.metadata
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
-
-
-session = loadSession()
-
-
 class DatabaseResult(Enum):
     FAILURE = 1
     DONT_EXIST = 2
@@ -63,6 +59,7 @@ class DatabaseResult(Enum):
 
 
 def get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, str):
+    session = loadSession()
     hrpartners = session.query(HrPartners).filter(HrPartners.id == hr_partner)
     hrpartners_count = hrpartners.count()
     if hrpartners_count == 0:
@@ -72,6 +69,7 @@ def get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, st
 
 
 def get_interview_uuid_from_application_id(application_id: int, which: int) -> (DatabaseResult, str):
+    session = loadSession()
     interviews = session.query(Interviews).order_by(desc(Interviews.date_time)).filter(
         Interviews.application_id == application_id)
     interviews_count = interviews.count()
