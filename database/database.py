@@ -1,9 +1,8 @@
 from sqlalchemy import desc
 
-
 from database.DatabaseResult import DatabaseResult
 from database.connect_to_database import loadSession
-from database.models import HrPartners, Interviews
+from database.models import HrPartners, Interviews, Applications, Users
 
 
 def get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, str):
@@ -27,3 +26,27 @@ def get_interview_uuid_from_application_id(application_id: int, which: int) -> (
         return DatabaseResult.DONT_EXIST, ""
     else:
         return DatabaseResult.SUCCESS, interviews[which].id
+
+
+def get_application(application_id: int):
+    session = loadSession()
+    application = session.query(Applications).get(application_id)
+    return application
+
+
+def get_user(user_id: int):
+    session = loadSession()
+    user = session.query(Users).get(user_id)
+    return user
+
+
+def get_user_from_interview_uuid(interview_uuid: str) -> (DatabaseResult, str):
+    session = loadSession()
+    interviews = session.query(Interviews).filter(Interviews.id == interview_uuid)
+    if interviews.count() == 0:
+        return DatabaseResult.DONT_EXIST, f"Interview with id: {interview_uuid} doesn't exist"
+
+    interview = interviews[0]
+    application = get_application(interview.application)
+    user = get_user(application.jobSeeker)
+    return DatabaseResult.SUCCESS, user

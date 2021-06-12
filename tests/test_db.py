@@ -1,6 +1,10 @@
 from database.DatabaseResult import DatabaseResult
 
 
+class Dummy:
+    pass
+
+
 def override_get_organization_uuid_from_hrpartner(hr_partner: int) -> (DatabaseResult, str):
     hrpartners_count = 1 if hr_partner == 5 else 0
     if hrpartners_count == 0:
@@ -17,3 +21,12 @@ def override_get_interview_uuid_from_application_id(application_id: int, which: 
         return DatabaseResult.DONT_EXIST, ""
     else:
         return DatabaseResult.SUCCESS, "e1177e54-d903-4e91-a299-ddc56606785b" if which == 0 else "cbb6b884-888a-4ec4-9446-0a25ba2f2e9e"
+
+
+def override_get_user_from_interview_uuid(interview_uuid: str) -> (DatabaseResult, str):
+    if interview_uuid != "e1177e54-d903-4e91-a299-ddc56606785b":
+        return DatabaseResult.DONT_EXIST, f"Interview with id: {interview_uuid} doesn't exist"
+    user = Dummy()
+    user.firstName = "John"
+    user.lastName = "Adams"
+    return DatabaseResult.SUCCESS, user

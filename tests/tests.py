@@ -32,7 +32,7 @@ class TestMain:
         assert response.status_code == 404
         assert result['detail'] == "This hrpartner doesn't exists"
 
-    def test_interview_not_exists(self):
+    def test_interviews_not_exists(self):
         response = client.get("/interview/5/5")
         result = response.json()
         assert response.status_code == 404
@@ -44,3 +44,15 @@ class TestMain:
         assert response.status_code == 404
         assert result['detail'] == f"This application doesn't have got 6 interviews"
 
+    def test_jobseeker_interview_not_exists(self):
+        response = client.get("/interview/jobseeker/afasfsdffawerqwrad")
+        result = response.json()
+        assert response.status_code == 404
+        assert result['detail'] == "Interview with id: afasfsdffawerqwrad doesn't exist"
+
+    def test_jobseeker_happy(self):
+        response = client.get("/interview/jobseeker/e1177e54-d903-4e91-a299-ddc56606785b")
+        assert response.status_code == 200
+        result = response.json()
+        assert result['first_name'] == "John"
+        assert result['last_name'] == "Adams"
