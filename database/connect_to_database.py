@@ -11,7 +11,7 @@ db_key = "DATABASE_URL"
 def get_attribute(key: str):
     filename = "./config.json"
     if not isfile(filename):
-        print("Problem with file")
+        print("File doesn't exist")
         return None
 
     with open(filename) as json_file:
@@ -19,7 +19,7 @@ def get_attribute(key: str):
         if key in data:
             return data[key]
         else:
-            print("No key in file")
+            print(f"No key {key} in file")
             return None
 
 
