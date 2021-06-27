@@ -44,11 +44,18 @@ class TestMain:
         assert response.status_code == 404
         assert result['detail'] == f"This application doesn't have got 6 interviews"
 
-    def test_jobseeker_interview_not_exists(self):
-        response = client.get("/interview/jobseeker/afasfsdffawerqwrad")
+    def test_jobseeker_not_proper_uuid(self):
+        response = client.get("/interview/jobseeker/zasdafasdfsacasdfsfadfasd")
         result = response.json()
         assert response.status_code == 404
-        assert result['detail'] == "Interview with id: afasfsdffawerqwrad doesn't exist"
+        assert result['detail'] == "This string is not valid uuid"
+
+    def test_jobseeker_interview_not_exists(self):
+        uuid = "a1177e54-d903-4e91-a299-ddc56606785b"
+        response = client.get(f"/interview/jobseeker/{uuid}")
+        result = response.json()
+        assert response.status_code == 404
+        assert result['detail'] == f"Interview with id: {uuid} doesn't exist"
 
     def test_jobseeker_happy(self):
         response = client.get("/interview/jobseeker/e1177e54-d903-4e91-a299-ddc56606785b")

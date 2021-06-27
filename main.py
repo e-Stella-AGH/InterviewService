@@ -1,19 +1,30 @@
 from fastapi import Depends, FastAPI, HTTPException
-from datetime import date
-from typing import Dict
-from starlette.testclient import TestClient
+from fastapi.middleware.cors import CORSMiddleware
 
 from database.DatabaseResult import DatabaseResult
 from database.database import get_organization_uuid_from_hrpartner, get_interview_uuid_from_application_id, \
     get_user_from_interview_uuid
 from tests.test_db import override_get_interview_uuid_from_application_id, \
     override_get_organization_uuid_from_hrpartner, override_get_user_from_interview_uuid
+from additional_functions import is_valid_uuid
 
 app = FastAPI()
 
 
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @app.get("/interview/jobseeker/{interview_uuid}")
 async def get_jobseeker_name(interview_uuid: str):
+    if not is_valid_uuid(interview_uuid):
+        raise HTTPException(status_code=404, detail="This string is not valid uuid")
     user = get_user_from_interview_uuid(interview_uuid)
     if user[0] == DatabaseResult.DONT_EXIST:
         raise HTTPException(status_code=404, detail=user[1])
